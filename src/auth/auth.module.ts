@@ -5,10 +5,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserSession } from './user-session.entity';
 import { User } from '../users/user.entity';
 import { MailModule } from '../mail/mail.module';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, UserSession]), MailModule],
-  providers: [AuthService],
+  imports: [
+    TypeOrmModule.forFeature([User, UserSession]),
+    MailModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+  ],
+  providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
+  exports: [PassportModule],
 })
 export class AuthModule {}

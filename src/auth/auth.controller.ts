@@ -3,12 +3,14 @@ import { SignUpDto } from './dtos/signup.dto';
 import { AuthService } from './auth.service';
 import { SignupResponseDto } from './dtos/signup-response.dto';
 import { Serialize } from '../interceptors/SerializeInterceptor';
+import { IsPublic } from './decorators/is-public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Serialize(SignupResponseDto)
+  @IsPublic()
   @Post('/signup')
   signup(@Body() body: SignUpDto) {
     return this.authService.signup(body);
