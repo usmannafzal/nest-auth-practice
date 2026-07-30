@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../users/user.entity';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,7 @@ export class AuthService {
     @InjectRepository(User) private repo: Repository<User>,
     private jwt: JwtService,
     private config: ConfigService,
+    private mailService: MailService,
   ) {}
 
   async generateTokens(user: User) {
@@ -47,7 +49,14 @@ export class AuthService {
   async signup(body: SignUpDto) {
     const user = await this.createUser(body);
     if (!user) throw new UnauthorizedException('Invalid credentials');
-
+    const isStaging = this.config.get('NODE_ENV') === 'staging';
+    if (!isStaging)
+      await this.mailService.sendEmail({
+        to: user.email,
+        subject: 'Greetings from Nest Auth',
+        text: 'This is a test application for sending emails',
+        html: `<p>Welcome to our app ${user.fullName}</p>`,
+      });
     const [accessToken, refreshToken] = await this.generateTokens(user);
     return { user, accessToken, refreshToken };
   }
