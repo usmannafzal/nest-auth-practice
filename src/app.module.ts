@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { UserSession } from './auth/user-session.entity';
+import { PasswordResetToken } from './auth/password-reset-token.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { MailModule } from './mail/mail.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -39,7 +40,7 @@ import { APP_GUARD } from '@nestjs/core';
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
         synchronize: true,
-        entities: [User, UserSession],
+        entities: [User, UserSession, PasswordResetToken],
       }),
     }),
     AuthModule,

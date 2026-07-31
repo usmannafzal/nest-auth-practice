@@ -1,4 +1,5 @@
 import { UserSession } from '../auth/user-session.entity';
+import { PasswordResetToken } from '../auth/password-reset-token.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import _ from 'lodash';
 
@@ -29,6 +30,9 @@ export class User {
 
   @OneToMany(() => UserSession, (userSession) => userSession.user)
   userSessions: UserSession[];
+
+  @OneToMany(() => PasswordResetToken, (token) => token.user)
+  passwordResetTokens: PasswordResetToken[];
 
   get fullName(): string {
     return `${_.capitalize(this.firstName)} ${_.capitalize(this.lastName)}`;
